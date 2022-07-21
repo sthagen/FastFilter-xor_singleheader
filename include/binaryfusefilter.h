@@ -9,7 +9,7 @@
 #include <string.h>
 #ifndef XOR_MAX_ITERATIONS
 #define XOR_MAX_ITERATIONS                                                     \
-  100 // probabillity of success should always be > 0.5 so 100 iterations is
+  100 // probability of success should always be > 0.5 so 100 iterations is
       // highly unlikely
 #endif
 
@@ -296,7 +296,13 @@ bool binary_fuse8_populate(const uint64_t *keys, uint32_t size,
       error = (t2count[h1] < 4) ? 1 : error;
       error = (t2count[h2] < 4) ? 1 : error;
     }
-    if(error) { continue; }
+    if(error) {
+      memset(reverseOrder, 0, sizeof(uint64_t[size]));
+      memset(t2count, 0, sizeof(uint8_t[capacity]));
+      memset(t2hash, 0, sizeof(uint64_t[capacity]));
+      filter->Seed = binary_fuse_rng_splitmix64(&rng_counter);
+      continue; 
+    }
 
     // End of key addition
     uint32_t Qsize = 0;
